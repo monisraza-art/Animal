@@ -3,7 +3,7 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import ContactDetails from "../../../components/ContactDetails";
+import ContactDetails from "@/components/ContactDetails";
 
 const ContactPage = () => {
   const inputClass = "focus-visible:ring-green-500";
