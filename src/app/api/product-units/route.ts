@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
   const skip = (page - 1) * limit
 
   const [items, total] = await Promise.all([
-    prisma.productUnits.findMany({
+    prisma.productUnit.findMany({
       where: {
         units: { contains: search },
       },
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
       skip,
       take: limit,
     }),
-    prisma.productUnits.count({
+    prisma.productUnit.count({
       where: {
         units: { contains: search },
       },
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: result.error }, { status: 400 })
     }
 
-    const newUnit = await prisma.productUnits.create({
+    const newUnit = await prisma.productUnit.create({
       data: { units: result.data.units },
     })
 
@@ -71,7 +71,7 @@ export async function PUT(req: Request) {
       return NextResponse.json({ error: "ID and units are required" }, { status: 400 })
     }
 
-    const updated = await prisma.productUnits.update({
+    const updated = await prisma.productUnit.update({
       where: { id },
       data: { units },
     })
@@ -91,7 +91,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "ID is required" }, { status: 400 })
     }
 
-    await prisma.productUnits.delete({
+    await prisma.productUnit.delete({
       where: { id },
     })
 
