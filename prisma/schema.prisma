@@ -1,0 +1,240 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+
+model City {
+  id      Int              @id @default(autoincrement())
+  name    String           @unique
+  charges DeliveryCharge[]
+  createdAt DateTime       @default(now())
+}
+
+model DeliveryCharge {
+  id      Int      @id @default(autoincrement())
+  amount  Float
+  cityId  Int
+  city    City     @relation(fields: [cityId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+
+model Species {
+  id         Int           @id @default(autoincrement())
+  specieName String        @unique
+  image      SpecieImage?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model SpecieImage {
+  id        Int     @id @default(autoincrement())
+  url       String  // Cloudinary URL
+  alt       String  // Alt text for the image
+  publicId  String  // For deleting image from Cloudinary
+
+  species   Species @relation(fields: [speciesId], references: [id], onDelete: Cascade)
+  speciesId Int     @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model specialization {
+  id        Int      @id @default(autoincrement())
+  specialization      String @unique
+  createdAt DateTime @default(now())
+}
+model vendourType {
+  id        Int      @id @default(autoincrement())
+  vendourType      String @unique
+  createdAt DateTime @default(now())
+}
+
+
+
+model Category {
+  id           Int           @id @default(autoincrement())
+  categoryName String        @unique
+  image        CategoryImage?
+  isActive     Boolean       @default(false)
+  isFeatured   Boolean       @default(false)
+  products     Product[]
+  subCategories SubCategory[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model CategoryImage {
+  id         Int      @id @default(autoincrement())
+  url        String
+  alt        String
+  publicId   String?
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId Int      @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model SubCategory {
+  id                Int                @id @default(autoincrement())
+  subCategoryName   String             @unique
+  image             SubCategoryImage?
+  isActive          Boolean            @default(false)
+  isFeatured        Boolean            @default(false)
+  category          Category           @relation(fields: [categoryId], references: [id])
+  categoryId        Int
+  products          Product[]
+  subSubCategories  SubSubCategory[]   // One-to-many relationship with SubSubCategory
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model SubCategoryImage {
+  id            Int         @id @default(autoincrement())
+  url           String
+  alt           String
+  publicId      String?
+  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  subCategoryId Int         @unique
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model SubSubCategory {
+  id                Int                    @id @default(autoincrement())
+  subSubCategoryName String
+  isFeatured         Boolean                @default(false)
+  image              SubSubCategoryImage?
+  subCategory        SubCategory            @relation(fields: [subCategoryId], references: [id])
+  subCategoryId      Int
+  
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+}
+
+model SubSubCategoryImage {
+  id             Int            @id @default(autoincrement())
+  url            String
+  alt            String
+  publicId       String?
+  subSubCategory SubSubCategory @relation(fields: [subSubCategoryId], references: [id], onDelete: Cascade)
+  subSubCategoryId Int            @unique
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+
+model Product {
+  id             Int           @id @default(autoincrement())
+  productName    String
+  genericName    String?
+  category       Category?     @relation(fields: [categoryId], references: [id])
+  categoryId     Int?
+  subCategory    SubCategory?  @relation(fields: [subCategoryId], references: [id])
+  subCategoryId  Int?
+  productType    ProductType?  @relation(fields: [productTypeId], references: [id])
+  productTypeId  Int?
+  company        Company       @relation(fields: [companyId], references: [id])
+  companyId      Int
+  price          Float?
+  dealerPrice    Float?
+  customerPrice  Float?
+  packingUnit    ProductUnit   @relation(fields: [packingUnitId], references: [id])
+  packingUnitId  Int
+  partner        Partner?      @relation(fields: [partnerId], references: [id])
+  partnerId      Int?
+  description    String?   @db.LongText
+  dosage         String?   @db.LongText
+
+  image          ProductImage?
+  productImageId Int?          @unique // Ensures 1-to-1
+
+  pdf            ProductPdf?   
+  productPdfId   Int?          @unique
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+
+model ProductPdf {
+  id        Int      @id @default(autoincrement())
+  url       String
+  publicId  String?
+  product   Product?  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int?     @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model ProductImage {
+  id        Int      @id @default(autoincrement())
+  url       String
+  alt       String
+  publicId  String?
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Company {
+  id          Int           @id @default(autoincrement())
+  companyName String
+  mobileNumber String?
+  products    Product[]
+  address     String?
+  email       String?
+  image       CompanyImage?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model CompanyImage {
+  id        Int      @id @default(autoincrement())
+  url       String
+  alt       String
+  publicId  String?
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId Int      @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Partner {
+  id          Int       @id @default(autoincrement())
+  partnerName String
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model ProductType {
+  id        Int       @id @default(autoincrement())
+  type      String
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model ProductUnit {
+  id        Int       @id @default(autoincrement())
+  units     String
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
