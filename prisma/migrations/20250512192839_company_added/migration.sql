@@ -1,94 +1,65 @@
-/*
-  Warnings:
-
-  - You are about to drop the `productType` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `productUnits` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropTable
-DROP TABLE `productType`;
-
--- DropTable
-DROP TABLE `productUnits`;
-
 -- CreateTable
-CREATE TABLE `Category` (
+CREATE TABLE `City` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `categoryName` VARCHAR(191) NOT NULL,
-    `isActive` BOOLEAN NOT NULL DEFAULT false,
-    `isFeatured` BOOLEAN NOT NULL DEFAULT false,
+    `name` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `Category_categoryName_key`(`categoryName`),
+    UNIQUE INDEX `City_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `CategoryImage` (
+CREATE TABLE `DeliveryCharge` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `amount` DOUBLE NOT NULL,
+    `cityId` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Species` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `specieName` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `Species_specieName_key`(`specieName`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `SpecieImage` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `url` VARCHAR(191) NOT NULL,
     `alt` VARCHAR(191) NOT NULL,
-    `publicId` VARCHAR(191) NULL,
-    `categoryId` INTEGER NOT NULL,
+    `publicId` VARCHAR(191) NOT NULL,
+    `speciesId` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `CategoryImage_categoryId_key`(`categoryId`),
+    UNIQUE INDEX `SpecieImage_speciesId_key`(`speciesId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `SubCategory` (
+CREATE TABLE `specialization` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `subCategoryName` VARCHAR(191) NOT NULL,
-    `isActive` BOOLEAN NOT NULL DEFAULT false,
-    `isFeatured` BOOLEAN NOT NULL DEFAULT false,
-    `categoryId` INTEGER NOT NULL,
+    `specialization` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `SubCategory_subCategoryName_key`(`subCategoryName`),
+    UNIQUE INDEX `specialization_specialization_key`(`specialization`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `SubCategoryImage` (
+CREATE TABLE `vendourType` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `url` VARCHAR(191) NOT NULL,
-    `alt` VARCHAR(191) NOT NULL,
-    `publicId` VARCHAR(191) NULL,
-    `subCategoryId` INTEGER NOT NULL,
+    `vendourType` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `SubCategoryImage_subCategoryId_key`(`subCategoryId`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `SubSubCategory` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `subSubCategoryName` VARCHAR(191) NOT NULL,
-    `isFeatured` BOOLEAN NOT NULL DEFAULT false,
-    `subCategoryId` INTEGER NOT NULL,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `SubSubCategoryImage` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `url` VARCHAR(191) NOT NULL,
-    `alt` VARCHAR(191) NOT NULL,
-    `publicId` VARCHAR(191) NULL,
-    `subSubCategoryId` INTEGER NOT NULL,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
-
-    UNIQUE INDEX `SubSubCategoryImage_subSubCategoryId_key`(`subSubCategoryId`),
+    UNIQUE INDEX `vendourType_vendourType_key`(`vendourType`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -155,6 +126,10 @@ CREATE TABLE `Company` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `Company_companyName_key`(`companyName`),
+    UNIQUE INDEX `Company_mobileNumber_key`(`mobileNumber`),
+    UNIQUE INDEX `Company_address_key`(`address`),
+    UNIQUE INDEX `Company_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -168,6 +143,9 @@ CREATE TABLE `CompanyImage` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `CompanyImage_url_key`(`url`),
+    UNIQUE INDEX `CompanyImage_alt_key`(`alt`),
+    UNIQUE INDEX `CompanyImage_publicId_key`(`publicId`),
     UNIQUE INDEX `CompanyImage_companyId_key`(`companyId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -203,25 +181,10 @@ CREATE TABLE `ProductUnit` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `CategoryImage` ADD CONSTRAINT `CategoryImage_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `Category`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `DeliveryCharge` ADD CONSTRAINT `DeliveryCharge_cityId_fkey` FOREIGN KEY (`cityId`) REFERENCES `City`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `SubCategory` ADD CONSTRAINT `SubCategory_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `Category`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `SubCategoryImage` ADD CONSTRAINT `SubCategoryImage_subCategoryId_fkey` FOREIGN KEY (`subCategoryId`) REFERENCES `SubCategory`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `SubSubCategory` ADD CONSTRAINT `SubSubCategory_subCategoryId_fkey` FOREIGN KEY (`subCategoryId`) REFERENCES `SubCategory`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `SubSubCategoryImage` ADD CONSTRAINT `SubSubCategoryImage_subSubCategoryId_fkey` FOREIGN KEY (`subSubCategoryId`) REFERENCES `SubSubCategory`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Product` ADD CONSTRAINT `Product_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `Category`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Product` ADD CONSTRAINT `Product_subCategoryId_fkey` FOREIGN KEY (`subCategoryId`) REFERENCES `SubCategory`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `SpecieImage` ADD CONSTRAINT `SpecieImage_speciesId_fkey` FOREIGN KEY (`speciesId`) REFERENCES `Species`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Product` ADD CONSTRAINT `Product_productTypeId_fkey` FOREIGN KEY (`productTypeId`) REFERENCES `ProductType`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

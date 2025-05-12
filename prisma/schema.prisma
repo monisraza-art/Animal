@@ -66,85 +66,13 @@ model vendourType {
 
 
 
-model Category {
-  id           Int           @id @default(autoincrement())
-  categoryName String        @unique
-  image        CategoryImage?
-  isActive     Boolean       @default(false)
-  isFeatured   Boolean       @default(false)
-  products     Product[]
-  subCategories SubCategory[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-}
-
-model CategoryImage {
-  id         Int      @id @default(autoincrement())
-  url        String
-  alt        String
-  publicId   String?
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  categoryId Int      @unique
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-}
-
-model SubCategory {
-  id                Int                @id @default(autoincrement())
-  subCategoryName   String             @unique
-  image             SubCategoryImage?
-  isActive          Boolean            @default(false)
-  isFeatured        Boolean            @default(false)
-  category          Category           @relation(fields: [categoryId], references: [id])
-  categoryId        Int
-  products          Product[]
-  subSubCategories  SubSubCategory[]   // One-to-many relationship with SubSubCategory
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-}
-
-model SubCategoryImage {
-  id            Int         @id @default(autoincrement())
-  url           String
-  alt           String
-  publicId      String?
-  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
-  subCategoryId Int         @unique
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-}
-
-model SubSubCategory {
-  id                Int                    @id @default(autoincrement())
-  subSubCategoryName String
-  isFeatured         Boolean                @default(false)
-  image              SubSubCategoryImage?
-  subCategory        SubCategory            @relation(fields: [subCategoryId], references: [id])
-  subCategoryId      Int
-  
-  createdAt          DateTime               @default(now())
-  updatedAt          DateTime               @updatedAt
-}
-
-model SubSubCategoryImage {
-  id             Int            @id @default(autoincrement())
-  url            String
-  alt            String
-  publicId       String?
-  subSubCategory SubSubCategory @relation(fields: [subSubCategoryId], references: [id], onDelete: Cascade)
-  subSubCategoryId Int            @unique
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-}
 
 
 model Product {
   id             Int           @id @default(autoincrement())
   productName    String
   genericName    String?
-  category       Category?     @relation(fields: [categoryId], references: [id])
   categoryId     Int?
-  subCategory    SubCategory?  @relation(fields: [subCategoryId], references: [id])
   subCategoryId  Int?
   productType    ProductType?  @relation(fields: [productTypeId], references: [id])
   productTypeId  Int?
@@ -194,21 +122,21 @@ model ProductImage {
 }
 model Company {
   id          Int           @id @default(autoincrement())
-  companyName String
-  mobileNumber String?
+  companyName String @unique
+  mobileNumber String?  @unique
   products    Product[]
-  address     String?
-  email       String?
-  image       CompanyImage?
+  address     String? @unique
+  email       String? @unique
+  image       CompanyImage? 
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 }
 
 model CompanyImage {
   id        Int      @id @default(autoincrement())
-  url       String
-  alt       String
-  publicId  String?
+  url       String  @unique
+  alt       String  @unique
+  publicId  String?  @unique
   company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId Int      @unique
   createdAt DateTime @default(now())

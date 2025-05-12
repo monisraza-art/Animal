@@ -38,15 +38,14 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={() => setOpenCategories(!openCategories)}>
                   <Layers className="w-4 h-4" />
-                  <span className="hover:text-green-500">Categories</span>
+                  <span className="hover:text-green-500">Companies</span>
                   <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${openCategories ? "rotate-180" : "rotate-0"}`} />
                 </SidebarMenuButton>
                 {openCategories && (
                   <div className="ml-6 mt-2 space-y-1">
-                    <Link href="/dashboard/category" className="block text-sm text-muted-foreground hover:underline">Add Category</Link>
-                    <Link href="/dashboard/subCategory" className="block text-sm text-muted-foreground hover:underline">Add Sub Category</Link>
-                    <Link href="/dashboard/subSubCategory"className="block text-sm text-muted-foreground hover:underline">Add Sub Sub Category</Link>
-                    <Link href="/dashboard/animalsForSale" className="block text-sm text-muted-foreground hover:underline">Animals For Sale</Link>
+                    <Link href="/dashboard/addCompany" className="block text-sm text-muted-foreground hover:underline">Add Company</Link>
+                    <Link href="/dashboard/viewCompanies" className="block text-sm text-muted-foreground hover:underline">Veiw Companies</Link>
+                    
                   </div>
                 )}
               </SidebarMenuItem>
