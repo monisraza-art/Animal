@@ -32,37 +32,6 @@ model DeliveryCharge {
 }
 
 
-model Species {
-  id         Int           @id @default(autoincrement())
-  specieName String        @unique
-  image      SpecieImage?
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
-}
-
-model SpecieImage {
-  id        Int     @id @default(autoincrement())
-  url       String  // Cloudinary URL
-  alt       String  // Alt text for the image
-  publicId  String  // For deleting image from Cloudinary
-
-  species   Species @relation(fields: [speciesId], references: [id], onDelete: Cascade)
-  speciesId Int     @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model specialization {
-  id        Int      @id @default(autoincrement())
-  specialization      String @unique
-  createdAt DateTime @default(now())
-}
-model vendourType {
-  id        Int      @id @default(autoincrement())
-  vendourType      String @unique
-  createdAt DateTime @default(now())
-}
 
 
 
@@ -130,7 +99,7 @@ model Company {
   image       CompanyImage? 
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-}
+} 
 
 model CompanyImage {
   id        Int      @id @default(autoincrement())
@@ -143,12 +112,100 @@ model CompanyImage {
   updatedAt DateTime @updatedAt
 }
 
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum SendToPartner {
+  YES
+  NO
+}
+
+enum BloodGroup {
+  A_POSITIVE
+  B_POSITIVE
+  A_NEGATIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+
+model PartnerImage {
+  id        Int      @id @default(autoincrement())
+  url       String
+  alt       String?
+  publicId  String?
+ partner   Partner? @relation(fields: [partnerId], references: [id])
+  partnerId Int?     @unique
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StartTime {
+  id        Int      @id @default(autoincrement())
+  name      String
+  startTime DateTime @db.Time
+  endTime   DateTime @db.Time
+  partners  Partner[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
 model Partner {
-  id          Int       @id @default(autoincrement())
-  partnerName String
-  products    Product[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id                Int             @id @default(autoincrement())
+  partnerName       String
+  gender            Gender?
+  partnerEmail      String?
+  shopName          String?
+  partnerMobileNumber String?
+  cityName          String?
+  fullAddress       String?
+  rvmpNumber        String?
+  sendToPartner     SendToPartner?
+  qualificationDegree String?
+  zipcode           String?
+  state             String?
+  areaTown          String?
+  password          String? // Consider security best practices for storing passwords
+  bloodGroup        BloodGroup?
+    availableDaysOfWeek  PartnerAvailableDay[]
+   partnerImage     PartnerImage?   
+  
+  startTime         StartTime[]
+  
+  specialization    String?
+  
+  species           String?
+  
+  partnerType        String?
+  products          Product[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model PartnerAvailableDay {
+  id         Int        @id @default(autoincrement())
+  day        DayOfWeek
+  partner    Partner    @relation(fields: [partnerId], references: [id])
+  partnerId  Int
+
+  @@unique([day, partnerId]) // prevent duplicate days for the same partner
 }
 
 model ProductType {
