@@ -11,12 +11,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
            <SidebarProvider
       
     >
-      <div className="flex h-screen">
+     
         <AppSidebar />
           <SidebarTrigger className="p-4 " />
           {children}
         
-      </div>
+      
     </SidebarProvider>
     
     </div>

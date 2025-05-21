@@ -1,5 +1,3 @@
-SET SQL_REQUIRE_PRIMARY_KEY = OFF;
-
 -- CreateTable
 CREATE TABLE `City` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
@@ -25,24 +23,23 @@ CREATE TABLE `Product` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `productName` VARCHAR(191) NOT NULL,
     `genericName` VARCHAR(191) NULL,
-    `categoryId` INTEGER NULL,
-    `subCategoryId` INTEGER NULL,
-    `productTypeId` INTEGER NULL,
+    `category` VARCHAR(191) NOT NULL,
+    `subCategory` VARCHAR(191) NOT NULL,
+    `subsubCategory` VARCHAR(191) NOT NULL,
+    `productType` VARCHAR(191) NOT NULL,
     `companyId` INTEGER NOT NULL,
-    `price` DOUBLE NULL,
+    `companyPrice` DOUBLE NULL,
     `dealerPrice` DOUBLE NULL,
-    `customerPrice` DOUBLE NULL,
-    `packingUnitId` INTEGER NOT NULL,
-    `partnerId` INTEGER NULL,
-    `description` LONGTEXT NULL,
-    `dosage` LONGTEXT NULL,
-    `productImageId` INTEGER NULL,
-    `productPdfId` INTEGER NULL,
+    `customerPrice` DOUBLE NOT NULL,
+    `packingUnit` VARCHAR(191) NOT NULL,
+    `partnerId` INTEGER NOT NULL,
+    `description` VARCHAR(191) NULL,
+    `dosage` VARCHAR(191) NULL,
+    `isFeatured` BOOLEAN NOT NULL DEFAULT false,
+    `isActive` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `Product_productImageId_key`(`productImageId`),
-    UNIQUE INDEX `Product_productPdfId_key`(`productPdfId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -65,7 +62,7 @@ CREATE TABLE `ProductImage` (
     `url` VARCHAR(191) NOT NULL,
     `alt` VARCHAR(191) NOT NULL,
     `publicId` VARCHAR(191) NULL,
-    `productId` INTEGER NOT NULL,
+    `productId` INTEGER NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -171,26 +168,6 @@ CREATE TABLE `PartnerAvailableDay` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `ProductType` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `type` VARCHAR(191) NOT NULL,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `ProductUnit` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `units` VARCHAR(191) NOT NULL,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `_PartnerToStartTime` (
     `A` INTEGER NOT NULL,
     `B` INTEGER NOT NULL,
@@ -203,16 +180,10 @@ CREATE TABLE `_PartnerToStartTime` (
 ALTER TABLE `DeliveryCharge` ADD CONSTRAINT `DeliveryCharge_cityId_fkey` FOREIGN KEY (`cityId`) REFERENCES `City`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Product` ADD CONSTRAINT `Product_productTypeId_fkey` FOREIGN KEY (`productTypeId`) REFERENCES `ProductType`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE `Product` ADD CONSTRAINT `Product_companyId_fkey` FOREIGN KEY (`companyId`) REFERENCES `Company`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Product` ADD CONSTRAINT `Product_packingUnitId_fkey` FOREIGN KEY (`packingUnitId`) REFERENCES `ProductUnit`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Product` ADD CONSTRAINT `Product_partnerId_fkey` FOREIGN KEY (`partnerId`) REFERENCES `Partner`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Product` ADD CONSTRAINT `Product_partnerId_fkey` FOREIGN KEY (`partnerId`) REFERENCES `Partner`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `ProductPdf` ADD CONSTRAINT `ProductPdf_productId_fkey` FOREIGN KEY (`productId`) REFERENCES `Product`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

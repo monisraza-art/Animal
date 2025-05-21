@@ -35,60 +35,53 @@ model DeliveryCharge {
 
 
 
-
-
 model Product {
-  id             Int           @id @default(autoincrement())
+  id             Int            @id @default(autoincrement())
   productName    String
   genericName    String?
-  categoryId     Int?
-  subCategoryId  Int?
-  productType    ProductType?  @relation(fields: [productTypeId], references: [id])
-  productTypeId  Int?
-  company        Company       @relation(fields: [companyId], references: [id])
+  category       String
+  subCategory    String
+  subsubCategory String
+  productType    String
+  company        Company        @relation(fields: [companyId], references: [id])
   companyId      Int
-  price          Float?
+  companyPrice   Float?
   dealerPrice    Float?
-  customerPrice  Float?
-  packingUnit    ProductUnit   @relation(fields: [packingUnitId], references: [id])
-  packingUnitId  Int
-  partner        Partner?      @relation(fields: [partnerId], references: [id])
-  partnerId      Int?
-  description    String?   @db.LongText
-  dosage         String?   @db.LongText
-
-  image          ProductImage?
-  productImageId Int?          @unique // Ensures 1-to-1
-
-  pdf            ProductPdf?   
-  productPdfId   Int?          @unique
-
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  customerPrice  Float
+  packingUnit    String  
+  partner        Partner        @relation(fields: [partnerId], references: [id])
+  partnerId      Int
+  description    String?   
+  dosage         String?   
+  image          ProductImage?  // Changed to direct relation
+  pdf            ProductPdf?    // Changed to direct relation
+  isFeatured     Boolean        @default(false)
+  isActive       Boolean        @default(false)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 }
-
 
 model ProductPdf {
   id        Int      @id @default(autoincrement())
   url       String
   publicId  String?
-  product   Product?  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId Int?     @unique
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int?     @unique  // Made optional
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
 
 model ProductImage {
   id        Int      @id @default(autoincrement())
   url       String
   alt       String
   publicId  String?
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId Int @unique
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int?     @unique  // Made optional
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 model Company {
   id          Int           @id @default(autoincrement())
   companyName String @unique
@@ -208,18 +201,4 @@ model PartnerAvailableDay {
   @@unique([day, partnerId]) // prevent duplicate days for the same partner
 }
 
-model ProductType {
-  id        Int       @id @default(autoincrement())
-  type      String
-  products  Product[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-}
 
-model ProductUnit {
-  id        Int       @id @default(autoincrement())
-  units     String
-  products  Product[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-}
