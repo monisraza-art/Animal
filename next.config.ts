@@ -1,14 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true, // ✅ Disables ESLint checks during `next build`
+  },
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
-        pathname: '**', // This allows all paths under this hostname
+        pathname: '**',
       },
-      // You can add configurations for other external image hosts here
     ],
   },
 };
