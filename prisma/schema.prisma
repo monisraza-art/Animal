@@ -202,3 +202,11 @@ model PartnerAvailableDay {
 }
 
 
+model Media {
+  id        String   @id @default(uuid())
+  publicId  String   @unique
+  url       String
+  type      String   // 'image' or 'pdf'
+  fileName  String
+  createdAt DateTime @default(now())
+}

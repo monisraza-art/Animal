@@ -59,7 +59,7 @@ export function AppSidebar() {
                 </SidebarMenuButton>
                 {openProducts && (
                   <div className="ml-6 mt-2 space-y-1">
-                    <Link href="/dashboard/addProducts" className="block text-sm text-muted-foreground hover:underline">Add Product</Link>
+                    <Link href="/dashboard/addProduct" className="block text-sm text-muted-foreground hover:underline">Add Product</Link>
                     <Link href="/dashboard/veiwProducts" className="block text-sm text-muted-foreground hover:underline">View Products</Link>
                     <Link href="/dashboard/addUnits" className="block text-sm text-muted-foreground hover:underline">Add Units</Link>
                     <Link href="/dashboard/productTypes" className="block text-sm text-muted-foreground hover:underline">Product Type</Link>

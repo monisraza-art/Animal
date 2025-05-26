@@ -157,7 +157,7 @@ export default function AddProductPage() {
 
       if (response.status === 201) {
         toast.success("Product created successfully");
-        router.push("/products");
+        router.push("/addProduct");
       }
     } catch (error) {
       
