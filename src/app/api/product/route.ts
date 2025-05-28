@@ -20,7 +20,6 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 })
-
 async function uploadFileToCloudinary(
   buffer: Buffer,
   folder: string,
@@ -29,12 +28,11 @@ async function uploadFileToCloudinary(
 ): Promise<CloudinaryUploadResult> {
   return new Promise((resolve, reject) => {
     const baseFileName = originalFileName
-      ? originalFileName.replace(/\.[^/.]+$/, '') // remove extension
+      ? originalFileName.replace(/\.[^/.]+$/, '')
       : `file-${Date.now()}`
 
-    const extension = originalFileName?.split('.').pop() || (resourceType === 'pdf' ? 'pdf' : '')
-
-    const publicId = `${folder}/${baseFileName}`
+    const extension = originalFileName?.split('.').pop() || 'pdf'
+    const publicId = `${baseFileName}-${Date.now()}` // unique!
 
     const uploadStream = cloudinary.uploader.upload_stream(
       {
@@ -43,7 +41,7 @@ async function uploadFileToCloudinary(
         publicId,
         use_filename: true,
         unique_filename: false,
-        format: extension, // force format
+        format: extension,
       },
       (error, result) => {
         if (error) reject(new Error(error.message))
