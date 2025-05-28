@@ -34,6 +34,7 @@ interface Product {
   description: string | null
   dosage: string | null
   slug: string
+  isActive: boolean
   createdAt: string
   company: {
     companyName: string
@@ -72,7 +73,9 @@ export default function AllProductsPage() {
           fields: 'id,productName,genericName,category,subCategory,productType,company,customerPrice,packingUnit,partner,image,slug'
         },
       })
-      setProducts(data.data)
+
+ const activeProducts = data.data.filter((product: Product) => product.isActive)
+    setProducts(activeProducts)
       setTotal(data.total)
     } catch (error) {
       console.log(error)

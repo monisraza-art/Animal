@@ -24,24 +24,34 @@ cloudinary.config({
 async function uploadFileToCloudinary(
   buffer: Buffer,
   folder: string,
-  resourceType: 'image' | 'raw' = 'image'
+  resourceType: 'image' | 'raw' = 'image',
+  originalFileName?: string
 ): Promise<CloudinaryUploadResult> {
   return new Promise((resolve, reject) => {
+    const baseFileName = originalFileName
+      ? originalFileName.replace(/\.[^/.]+$/, '') // remove extension
+      : `file-${Date.now()}`
+
+    const extension = originalFileName?.split('.').pop() || (resourceType === 'pdf' ? 'pdf' : '')
+
+    const publicId = `${folder}/${baseFileName}`
+
     const uploadStream = cloudinary.uploader.upload_stream(
-      { 
+      {
         folder,
         resource_type: resourceType,
+        publicId,
+        use_filename: true,
+        unique_filename: false,
+        format: extension, // force format
       },
-      (error: CloudinaryError | undefined, result: CloudinaryUploadResult | undefined) => {
-        if (error) {
-          reject(new Error(error.message))
-        } else if (!result) {
-          reject(new Error('No result from Cloudinary'))
-        } else {
-          resolve(result)
-        }
+      (error, result) => {
+        if (error) reject(new Error(error.message))
+        else if (!result) reject(new Error('No result from Cloudinary'))
+        else resolve(result)
       }
     )
+
     uploadStream.end(buffer)
   })
 }
@@ -71,16 +81,18 @@ const updateProductSchema = productSchema.partial()
 // Helper function for file uploads
 async function handleFileUpload(file: File | null, type: 'image' | 'pdf') {
   if (!file) return null
-  
+
   const arrayBuffer = await file.arrayBuffer()
   const buffer = Buffer.from(arrayBuffer)
-  
+
   return uploadFileToCloudinary(
     buffer,
     `products/${type}s`,
-    type === 'pdf' ? 'raw' : 'image'
+    type === 'pdf' ? 'raw' : 'image',
+    file.name
   )
 }
+
 
 export async function POST(request: NextRequest) {
   try {
