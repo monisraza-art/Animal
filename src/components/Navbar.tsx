@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { MenuIcon } from "lucide-react";
 import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 import {
   Drawer,
@@ -41,6 +43,9 @@ import { usePathname } from "next/navigation";
 export default function Navbar() {
    const pathname = usePathname();
   const isDashboard = pathname.startsWith('/dashboard');
+
+const { data: session } = useSession();
+  const user = session?.user;
 
   if (isDashboard) return null; 
   return (
@@ -117,27 +122,46 @@ export default function Navbar() {
 
         {/* Avatar & Dropdown */}
 
-        <DropdownMenu>
-          <DropdownMenuTrigger className="outline-none border-none bg-transparent p-0">
-            <div className="p-1 px-3 border hover:shadow-md hover:shadow-black/60 gap-1 border-gray-300 dark:border-gray-700 rounded-full flex items-center transition duration-100 ease-in-out">
-              <Image
-                src="/avatarplaceholder.jpg"
-                alt="Avatar"
-                width={36}
-                height={36}
-                className="h-9 w-9 rounded-full object-cover"
-              />
+        {/* Auth buttons / avatar */}
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger className="outline-none border-none bg-transparent p-0">
+                <Avatar className="h-9 w-9">
+                  <AvatarImage src={user.image || ""} />
+                  <AvatarFallback>
+                    {user.name
+                      ?.split(" ")
+                      .map((n) => n[0])
+                      .join("") || "?"}
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Link href="/profile">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/wishlist">Wish list</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/orders">Order history</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => signOut()}>
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="flex gap-2">
+              <Button variant="outline"  onClick={() => signIn('google')}>
+                Login
+              </Button>
+              <Button className="bg-green-500 hover:bg-green-600"  onClick={() => signIn('google')}>Sign up</Button>
             </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Login</DropdownMenuItem>
-            <DropdownMenuItem>Wish list</DropdownMenuItem>
-            <DropdownMenuItem>Order history</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          )}
       </div>
       </div>
     </nav>

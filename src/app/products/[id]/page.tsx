@@ -2,6 +2,9 @@
 
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
+import AddToCartClientWrapper from '@/components/AddToCartClientWrapper'
+
+
 
 interface ProductPageProps {
   params: {
@@ -124,18 +127,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <button
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-md font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!data.isActive}
-              >
-                Buy Now
-              </button>
-              <button
-                className="flex-1 bg-white border border-green-500 text-green-500 hover:bg-green-50 py-3 px-6 rounded-md font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!data.isActive}
-              >
-                Add to Cart
-              </button>
+             
+            {data.isActive && (
+  <AddToCartClientWrapper productId={data.id} isActive={data.isActive} />
+)}
+
             </div>
 
             {/* Company & Partner Info */}
@@ -163,9 +159,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
         </svg>
       </div>
-      <div>
-        {data.pdf.url}
-      </div>
+     
       <div>
         <p className="font-medium">Product Information PDF</p>
         <a

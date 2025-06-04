@@ -5,7 +5,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/Navbar";
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-
+import SessionWrapper from "../components/sessionWrapper";
+import ProgressBar from "@/components/progressBar";
+import { Toaster } from 'react-hot-toast'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,9 +43,11 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+             <SessionWrapper>
+                <ProgressBar />
         <Navbar/>
-        
-        {children}
+         <Toaster position="top-center" />
+        {children}</SessionWrapper>
         <ToastContainer position="top-right" />
         </ThemeProvider>
       </body>

@@ -19,6 +19,7 @@ export function AppSidebar() {
   const [openProducts, setOpenProducts] = useState(false)
   const [openOrders, setOpenOrders] = useState(false)
   const [openPartners, setOpenPartners] = useState(false)
+  const [openUsers, setOpenUsers] = useState(false)
 
   return (
     <Sidebar collapsible="offcanvas" side="left" variant="sidebar" className="h-screen border-r dark:bg-zinc-900">
@@ -103,6 +104,22 @@ export function AppSidebar() {
                     <Link href="/dashboard/ordersCompleted" className="block text-sm text-muted-foreground hover:underline">Orders Completed</Link>
                     <Link href="/dashboard/purchasedFromVendors" className="block text-sm text-muted-foreground hover:underline">Purchased From Vendors</Link>
                     <Link href="/dashboard/requestByCustomers" className="block text-sm text-muted-foreground hover:underline">Request By Customers</Link>
+                  </div>
+                )}
+              </SidebarMenuItem>
+              
+              {/* Orders */}
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => setOpenUsers(!openUsers)}>
+                  <ShoppingCart className="w-4 h-4" />
+                  <span className="hover:text-green-500">Users</span>
+                  <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${openOrders ? "rotate-180" : "rotate-0"}`} />
+                </SidebarMenuButton>
+                {openUsers && (
+                  <div className="ml-6 mt-2 space-y-1">
+                    <Link href="/dashboard/users" className="block text-sm text-muted-foreground hover:underline">Customers</Link>
+                    <Link href="/dashboard/employees" className="block text-sm text-muted-foreground hover:underline">Employes</Link>
+                   
                   </div>
                 )}
               </SidebarMenuItem>
